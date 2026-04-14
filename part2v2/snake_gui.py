@@ -38,7 +38,7 @@ class SnakeReplay:
         self.goal = self.reference_frames[-1]["snake"][0] if self.reference_frames else None
         self.first_mismatch = self.find_first_mismatch()
         self.draw()
-        self.root.after(450, self.advance)
+        self.root.after(1000, self.advance)
 
     def load_mission(self) -> dict | None:
         mission_path = Path(self.report.get("mission_file", ""))
