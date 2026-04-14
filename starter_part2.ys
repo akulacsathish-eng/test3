@@ -1,0 +1,269 @@
+# Snake Control Firmware - Scaffolded Starter Y86-64 Program
+#
+# This starter is intentionally shorter than the full reference solution.
+# The longer indexing and shift machinery is already in place so you can focus
+# on the control-flow and state-update pieces that matter most.
+#
+# Each TODO includes a short C-style reference snippet in comments. The C code
+# is only a guide for the assembly you will write in that block.
+#
+# The runner initializes mission memory before execution starts.
+
+        .pos 0
+start:
+        jmp main
+
+main:
+        irmovq $1, %rbx
+        irmovq $8, %r13
+
+        irmovq moves_ptr, %rax
+        mrmovq 0(%rax), %rsi
+        irmovq snake_x_ptr, %rax
+        mrmovq 0(%rax), %rdi
+        irmovq snake_y_ptr, %rax
+        mrmovq 0(%rax), %r8
+        irmovq food_x_ptr, %rax
+        mrmovq 0(%rax), %r9
+        irmovq food_y_ptr, %rax
+        mrmovq 0(%rax), %r10
+        irmovq snake_length, %rax
+        mrmovq 0(%rax), %r11
+        irmovq num_moves, %rax
+        mrmovq 0(%rax), %r12
+
+move_loop:
+        andq %r12, %r12
+        jle finish
+
+        mrmovq 0(%rsi), %r14
+        addq %r13, %rsi
+        subq %rbx, %r12
+
+        andq %r14, %r14
+        je mark_completed
+
+        mrmovq 0(%rdi), %rax
+        mrmovq 0(%r8), %rbp
+
+        # Move decode is already provided in this scaffold.
+        rrmovq %r14, %rcx
+        subq %rbx, %rcx
+        je move_up
+        rrmovq %r14, %rcx
+        irmovq $2, %rdx
+        subq %rdx, %rcx
+        je move_down
+        rrmovq %r14, %rcx
+        irmovq $3, %rdx
+        subq %rdx, %rcx
+        je move_left
+        addq %rbx, %rax
+        jmp store_head
+
+move_up:
+        subq %rbx, %rbp
+        jmp store_head
+
+move_down:
+        addq %rbx, %rbp
+        jmp store_head
+
+move_left:
+        subq %rbx, %rax
+
+store_head:
+        irmovq next_head_x, %rcx
+        rmmovq %rax, 0(%rcx)
+        irmovq next_head_y, %rcx
+        rmmovq %rbp, 0(%rcx)
+
+        # TODO 1:
+        # Check whether the candidate head is outside the board.
+        # If so, the snake dies before any body update happens.
+        #
+        # C reference:
+        # if (next_x < 0 || next_x >= board_width ||
+        #     next_y < 0 || next_y >= board_height) {
+        #     alive_flag = 0;
+        #     stop_reason = 1;
+        #     goto wall_dead;
+        # }
+
+        irmovq grow_flag, %rax
+        irmovq $0, %rcx
+        rmmovq %rcx, 0(%rax)
+
+        # TODO 2:
+        # Detect whether the new head lands on the current food cell.
+        # If it does, store 1 in grow_flag.
+        #
+        # C reference:
+        # if (next_x == food_x[food_index] && next_y == food_y[food_index]) {
+        #     grow_flag = 1;
+        # }
+
+collision_setup:
+        rrmovq %r11, %rdx
+        rrmovq %r11, %rcx
+        subq %rbx, %rcx
+        irmovq grow_flag, %rax
+        mrmovq 0(%rax), %rbp
+        andq %rbp, %rbp
+        cmove %rcx, %rdx
+
+        rrmovq %rdi, %rcx
+        rrmovq %r8, %rbp
+
+self_scan:
+        andq %rdx, %rdx
+        jle prepare_growth
+
+        mrmovq 0(%rcx), %rax
+        irmovq next_head_x, %r14
+        mrmovq 0(%r14), %r14
+        subq %r14, %rax
+        jne next_segment
+
+        mrmovq 0(%rbp), %rax
+        irmovq next_head_y, %r14
+        mrmovq 0(%r14), %r14
+        subq %r14, %rax
+        je self_dead
+
+next_segment:
+        addq %r13, %rcx
+        addq %r13, %rbp
+        subq %rbx, %rdx
+        jmp self_scan
+
+prepare_growth:
+        irmovq grow_flag, %rax
+        mrmovq 0(%rax), %rax
+        andq %rax, %rax
+        je compute_shift
+        addq %rbx, %r11
+
+compute_shift:
+        rrmovq %r11, %rdx
+        subq %rbx, %rdx
+        irmovq $0, %rcx
+        rrmovq %rdx, %rax
+
+offset_loop:
+        andq %rax, %rax
+        jle shift_loop
+        addq %r13, %rcx
+        subq %rbx, %rax
+        jmp offset_loop
+
+shift_loop:
+        andq %rdx, %rdx
+        jle insert_head
+
+        rrmovq %rdi, %rax
+        addq %rcx, %rax
+        rrmovq %rax, %rbp
+        subq %r13, %rbp
+        mrmovq 0(%rbp), %r14
+        rmmovq %r14, 0(%rax)
+
+        rrmovq %r8, %rax
+        addq %rcx, %rax
+        rrmovq %rax, %rbp
+        subq %r13, %rbp
+        mrmovq 0(%rbp), %r14
+        rmmovq %r14, 0(%rax)
+
+        subq %r13, %rcx
+        subq %rbx, %rdx
+        jmp shift_loop
+
+insert_head:
+        irmovq next_head_x, %rax
+        mrmovq 0(%rax), %rcx
+        rmmovq %rcx, 0(%rdi)
+        irmovq next_head_y, %rax
+        mrmovq 0(%rax), %rcx
+        rmmovq %rcx, 0(%r8)
+
+        # TODO 3:
+        # If grow_flag is 1, update the food-hit bookkeeping.
+        # The length increase already happened in prepare_growth.
+        #
+        # C reference:
+        # if (grow_flag == 1) {
+        #     score++;
+        #     food_index++;
+        #     food_x_ptr += 8;
+        #     food_y_ptr += 8;
+        # }
+
+        jmp move_loop
+
+mark_completed:
+        irmovq stop_reason, %rax
+        irmovq $0, %rcx
+        rmmovq %rcx, 0(%rax)
+        jmp finish
+
+wall_dead:
+        irmovq alive_flag, %rax
+        irmovq $0, %rcx
+        rmmovq %rcx, 0(%rax)
+        irmovq stop_reason, %rax
+        irmovq $1, %rcx
+        rmmovq %rcx, 0(%rax)
+        jmp finalize_dead
+
+self_dead:
+        irmovq alive_flag, %rax
+        irmovq $0, %rcx
+        rmmovq %rcx, 0(%rax)
+        irmovq stop_reason, %rax
+        irmovq $2, %rcx
+        rmmovq %rcx, 0(%rax)
+
+finalize_dead:
+finish:
+        irmovq snake_length, %rax
+        rmmovq %r11, 0(%rax)
+
+        irmovq result_flag, %rax
+        irmovq $0, %rcx
+        rmmovq %rcx, 0(%rax)
+
+        # TODO 4:
+        # Set result_flag to 1 only when the snake is still alive and the
+        # score exactly matches target_score. If result_flag becomes 1,
+        # also store stop_reason = 3.
+        #
+        # C reference:
+        # if (alive_flag == 1 && score == target_score) {
+        #     result_flag = 1;
+        #     stop_reason = 3;
+        # }
+        #
+        # A conditional move is a clean way to build the 0/1 result value.
+
+        ret
+
+        .pos 0x300
+board_width:     .quad 0
+board_height:    .quad 0
+snake_length:    .quad 0
+alive_flag:      .quad 0
+score:           .quad 0
+food_index:      .quad 0
+num_moves:       .quad 0
+result_flag:     .quad 0
+target_score:    .quad 0
+moves_ptr:       .quad 0
+snake_x_ptr:     .quad 0
+snake_y_ptr:     .quad 0
+food_x_ptr:      .quad 0
+food_y_ptr:      .quad 0
+next_head_x:     .quad 0
+next_head_y:     .quad 0
+grow_flag:       .quad 0
+stop_reason:     .quad 0

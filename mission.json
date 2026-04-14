@@ -1,0 +1,52 @@
+{
+  "student_id": "U0000015860",
+  "story": "This Snake mission continues the same deterministic vault story from Part 1.",
+  "board_width": 8,
+  "board_height": 8,
+  "initial_length": 3,
+  "initial_snake_x": [
+    2,
+    1,
+    0
+  ],
+  "initial_snake_y": [
+    4,
+    4,
+    4
+  ],
+  "food_x": [
+    3,
+    0,
+    3
+  ],
+  "food_y": [
+    1,
+    2,
+    3
+  ],
+  "moves": [
+    1,
+    1,
+    1,
+    4,
+    2,
+    3,
+    3,
+    3,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    0
+  ],
+  "target_score": 3,
+  "preview_terminal_head": [
+    7,
+    3
+  ],
+  "reference_steps": 16
+}
