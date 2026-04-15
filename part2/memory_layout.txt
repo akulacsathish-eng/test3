@@ -1,0 +1,49 @@
+Snake Control Firmware Memory Layout
+===================================
+
+All values are stored as 8-byte quadwords.
+
+Metadata region
+---------------
+0x300  board_width       Width of the board in cells
+0x308  board_height      Height of the board in cells
+0x310  snake_length      Current snake length
+0x318  alive_flag        1 if alive, 0 if dead
+0x320  score             Number of foods eaten
+0x328  food_index        Index of the current food target
+0x330  num_moves         Number of entries in the move array, including the 0 terminator
+0x338  result_flag       1 if mission succeeded, else 0
+0x340  target_score      Score required to complete the mission
+0x348  moves_ptr         Base address of the move array
+0x350  snake_x_ptr       Base address of snake_x[]
+0x358  snake_y_ptr       Base address of snake_y[]
+0x360  food_x_ptr        Base address of food_x[]
+0x368  food_y_ptr        Base address of food_y[]
+0x370  next_head_x       Scratch location for candidate next x
+0x378  next_head_y       Scratch location for candidate next y
+0x380  grow_flag         Scratch location, 1 if the current move eats food
+0x388  stop_reason       0=end marker, 1=wall, 2=self, 3=completed alive
+
+Array region
+------------
+0x500  moves[]           Move codes, terminated by 0
+0x700  snake_x[]         Snake x-coordinates, head at index 0
+0x900  snake_y[]         Snake y-coordinates, head at index 0
+0xB00  food_x[]          Food x-coordinates in mission order
+0xD00  food_y[]          Food y-coordinates in mission order
+
+Move encoding
+-------------
+0  end of move sequence
+1  up
+2  down
+3  left
+4  right
+
+State conventions
+-----------------
+- The head is always stored at snake_x[0], snake_y[0].
+- The tail is at snake_x[snake_length - 1], snake_y[snake_length - 1].
+- On a normal move, the tail vacates its old cell.
+- On a growth move, the snake length increases by one and the old tail remains.
+- result_flag should be 1 only if alive_flag is 1 and score == target_score.
