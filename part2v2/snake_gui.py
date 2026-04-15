@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tkinter replay viewer for the Snake Control Firmware mission."""
+
 
 from __future__ import annotations
 

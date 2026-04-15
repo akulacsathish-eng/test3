@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-"""Run a student Y86 Snake firmware program."""
 
 from __future__ import annotations
 

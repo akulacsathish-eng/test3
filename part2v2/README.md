@@ -1,6 +1,6 @@
 # Part 2: Snake Control Firmware
 
-Part 2 picks up right after the memory-vault work from Part 1. Once you recover the Part 1 password, you will use it to unlock your Snake mission for this student ID.
+ Once you recover the Part 1 password, you will use it to unlock your Snake mission for this student ID.
 
 The Python files handle mission generation, checking, and replay. Your real job is the Y86-64 logic inside `starter_part2.ys`.
 
@@ -59,9 +59,9 @@ You may use different registers if you preserve the values the surrounding code 
 1. Finish Part 1 and note the recovered password.
 2. From the `part2` folder, unlock the mission:
 
-```bash
+
 python3 unlock_part2.py U0000015860 PASSWORD
-```
+
 
 3. Read `memory_layout.txt`.
 4. Open `starter_part2.ys`.
@@ -69,15 +69,15 @@ python3 unlock_part2.py U0000015860 PASSWORD
 6. Use the register notes in each TODO to plan your code.
 7. Run your program:
 
-```bash
+
 python3 run_part2.py
-```
+
 
 8. Replay what happened:
 
-```bash
+
 python3 snake_gui.py
-```
+
 
 The GUI shows your snake and the expected snake on the same board in a game-style replay window.
 
@@ -107,24 +107,23 @@ The side panel keeps the text focused on the things that matter most: step, scor
 
 If those are right, the mission is right.
 
-## Ubuntu notes
+
 
 From the `part2` folder:
 
-```bash
+
 python3 unlock_part2.py U0000015860 PASSWORD
 python3 run_part2.py
 python3 snake_gui.py
-```
+
 
 or:
 
-```bash
+
 ./run_part2.sh
-```
+
 
 If needed:
 
-```bash
+
 chmod +x run_part2.sh
-```

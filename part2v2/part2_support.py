@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared support code for Part 2 of the Memory Vault System."""
+
 
 from __future__ import annotations
 

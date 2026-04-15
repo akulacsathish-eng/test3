@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unlock Part 2 by validating the recovered Part 1 password."""
+
 
 from __future__ import annotations
 
