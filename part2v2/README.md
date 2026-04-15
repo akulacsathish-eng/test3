@@ -11,7 +11,7 @@ The Python files handle mission generation, checking, and replay. Your real job 
 3. Run `unlock_part2.py` with your student ID and that password.
 4. The script verifies the password and writes `mission.json` for your Part 2 run.
 
-That means the mission is still tied to the same deterministic story as Part 1, but the assembly work remains the center of the assignment.
+This keeps Part 2 connected to Part 1 while leaving the assembly work at the center of the assignment.
 
 ## What is already provided
 
@@ -86,7 +86,7 @@ The GUI shows your snake and the expected snake on the same board in a game-styl
 - Gold marks the final goal cell from the correct mission replay.
 - When your run first drifts from the expected run, the replay pauses briefly and highlights both head cells.
 
-The side panel keeps the text focused on the things that matter most: step, score, alive status, goal, and whether your snake is still on route.
+The side panel keeps the text focused on the things that matter most: step, score, alive status, goal, and whether your snake is still on track.
 
 ## Move encoding
 
