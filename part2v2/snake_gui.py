@@ -242,17 +242,28 @@ class SnakeReplay:
             y1 = y0 + CELL - 28
             self.canvas.create_oval(x0, y0, x1, y1, fill=fill, outline="")
 
-    def draw_path(self, points: list[tuple[int, int]], color: str, width: int, dash: tuple[int, int] | None = None) -> None:
+    def draw_path(
+        self,
+        points: list[tuple[int, int]],
+        color: str,
+        width: int,
+        dash: tuple[int, int] | None = None,
+        glow: str | None = None,
+    ) -> None:
         if not points:
             return
         coords: list[float] = []
         for x, y in points:
             coords.extend([x * CELL + CELL / 2, y * CELL + CELL / 2])
         if len(coords) >= 4:
+            if glow is not None:
+                self.canvas.create_line(*coords, fill=glow, width=width + 4, dash=dash, capstyle=tk.ROUND)
             self.canvas.create_line(*coords, fill=color, width=width, dash=dash, capstyle=tk.ROUND)
         for x, y in points:
             cx = x * CELL + CELL / 2
             cy = y * CELL + CELL / 2
+            if glow is not None:
+                self.canvas.create_oval(cx - 6, cy - 6, cx + 6, cy + 6, fill=glow, outline="")
             self.canvas.create_oval(cx - 4, cy - 4, cx + 4, cy + 4, fill=color, outline="")
 
     def draw_snake(
@@ -368,7 +379,7 @@ class SnakeReplay:
 
         self.draw_goal()
         self.draw_foods(reference_frame)
-        self.draw_path(self.head_path(self.reference_frames), ACCENT_BLUE, 4, dash=(6, 4))
+        self.draw_path(self.head_path(self.reference_frames), "#7fd3ff", 5, glow="#245a7a")
         self.draw_path(self.head_path(self.student_frames), ACCENT_GREEN, 6)
 
         if reference_frame is not None:
