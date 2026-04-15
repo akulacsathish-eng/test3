@@ -79,13 +79,14 @@ python3 run_part2.py
 python3 snake_gui.py
 ```
 
-The GUI overlays your snake path and the reference path on the same board.
+The GUI shows your snake and the expected snake on the same board in a game-style replay window.
 
-- Green shows the student path and current snake state.
-- Blue shows the reference path and expected snake state.
+- Green shows your snake and its path.
+- Blue shows the expected snake as a ghost snake and the expected path.
 - Gold marks the final goal cell from the correct mission replay.
+- When your run first drifts from the expected run, the replay pauses briefly and highlights both head cells.
 
-That makes it much easier to see exactly where your logic starts to drift.
+The side panel keeps the text focused on the things that matter most: step, score, alive status, goal, and whether your snake is still on route.
 
 ## Move encoding
 
